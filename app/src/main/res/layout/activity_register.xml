@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fillViewport="true"
+    tools:context="com.centaury.driverjalurangkot.RegisterActivity">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffffff">
+
+        <!--Header Start-->
+        <LinearLayout
+            android:id="@+id/headerregister"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@layout/header_gradient"
+            android:paddingTop="5dip"
+            android:paddingBottom="5dip">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/icon"
+                android:layout_marginLeft="10dip"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Driver Jalur Angkot"
+                android:textColor="#000000"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:layout_marginLeft="10dip"
+                android:layout_gravity="center_vertical"/>
+
+        </LinearLayout>
+        <!--Header End-->
+
+        <!--Register Form-->
+        <LinearLayout
+            android:id="@+id/formregister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dip"
+            android:orientation="vertical"
+            android:layout_below="@+id/headerregister">
+
+            <!--Fullname-->
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/inputlayoutname"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#000000">
+
+                <EditText
+                    android:id="@+id/inputname"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dip"
+                    android:singleLine="true"
+                    android:hint="@string/hint_name"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <!--Phone-->
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/inputlayoutphone"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#000000">
+
+                <EditText
+                    android:id="@+id/inputphone"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dip"
+                    android:singleLine="true"
+                    android:hint="@string/hint_phone"
+                    android:inputType="phone"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <!--  Password Label -->
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/inputlayoutregpass"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                app:passwordToggleEnabled="true">
+
+                <EditText
+                    android:id="@+id/inputregpass"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dip"
+                    android:singleLine="true"
+                    android:hint="@string/hint_password"
+                    android:inputType="textPassword"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <!--  Retype Password Label -->
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/inputlayoutretype"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                app:passwordToggleEnabled="true">
+
+                <EditText
+                    android:id="@+id/inputretype"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dip"
+                    android:singleLine="true"
+                    android:hint="@string/hint_retypepass"
+                    android:inputType="textPassword"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <!-- Login button -->
+            <Button android:id="@+id/btnRegister"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dip"
+                android:text="@string/btn_sign_up"
+                android:textColor="@android:color/white"
+                android:background="@color/colorPrimary"/>
+
+            <!-- Link to Registration Screen -->
+            <TextView android:id="@+id/link_to_login"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dip"
+                android:layout_marginBottom="40dip"
+                android:text="Already has account! Login here"
+                android:gravity="center"
+                android:textSize="20dip"
+                android:textColor="#0b84aa"/>
+
+        </LinearLayout>
+        <!--Register Form End-->
+
+        <!--Footer Start-->
+        <LinearLayout
+            android:id="@+id/footerregister"
+            android:layout_width="fill_parent"
+            android:layout_height="90dip"
+            android:layout_alignParentBottom="true"
+            android:background="@layout/footer_repeat"
+            android:layout_below="@+id/formregister"
+            android:orientation="vertical">
+
+        </LinearLayout>
+        <!--Footer End-->
+    </RelativeLayout>
+
+</ScrollView>
