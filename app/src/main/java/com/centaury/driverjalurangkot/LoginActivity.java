@@ -282,4 +282,5 @@ public class LoginActivity extends AppCompatActivity {
         if (!pDialog.isShowing())
             pDialog.dismiss();
     }
+
 }
