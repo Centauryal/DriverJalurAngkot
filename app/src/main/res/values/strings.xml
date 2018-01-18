@@ -17,4 +17,11 @@
     <string name="err_msg_phone">Enter the phone number</string>
     <string name="login">Login to your Account</string>
     <string name="register">Register New Account</string>
+    <string name="msg_exit">Are you sure you want to logout?</string>
+    <string name="mulai">Mulai</string>
+    <string name="berhenti">Selesai</string>
+
+    <string name="permission_rationale">Location permission is needed for core functionality</string>
+    <string name="permission_denied_explanation">Permission was denied, but is needed for core functionality.</string>
+    <string name="settings">Settings</string>
 </resources>

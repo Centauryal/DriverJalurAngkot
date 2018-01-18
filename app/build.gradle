@@ -35,4 +35,6 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.3.1'
 
     compile 'com.mcxiaoke.volley:library-aar:1.0.0'
+
+    implementation 'com.google.android.gms:play-services-location:11.0.0'
 }
