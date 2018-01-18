@@ -113,14 +113,14 @@ public class MainActivity extends AppCompatActivity {
         // session manager
         session = new SessionManager(getApplicationContext());
 
-        /*if (!session.isLoggedIn()) {
+        if (!session.isLoggedIn()) {
 
             Toast.makeText(getApplicationContext(), "Silahkan Login kembali", Toast.LENGTH_LONG).show();
 
             Intent kembali = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(kembali);
             finish();
-        }*/
+        }
 
         // Fetching user details from sqlite
         HashMap<String, String> driver = db.getDriverDetails();
