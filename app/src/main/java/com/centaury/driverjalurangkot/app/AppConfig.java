@@ -11,4 +11,10 @@ public class AppConfig {
 
     // Server user register url
     public static String URL_REGISTER = "http://192.168.1.69/jalur_angkot_api/register_drivers.php";
+
+    // Server Retrieve location
+    public static String URL_GETLOCATION = "http://www.supersoft.co.id/jalurangkot/getlocation.php";
+
+    // Server post location
+    public static String URL_SETLOCATION = "http://www.supersoft.co.id/jalurangkot/setlocation.php";
 }

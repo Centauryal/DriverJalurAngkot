@@ -24,8 +24,19 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+import com.centaury.driverjalurangkot.app.AppConfig;
+import com.centaury.driverjalurangkot.app.AppController;
 import com.centaury.driverjalurangkot.helper.SQLiteHandler;
 import com.centaury.driverjalurangkot.helper.SessionManager;
+
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.Request.Method;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -44,6 +55,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -113,14 +125,14 @@ public class MainActivity extends AppCompatActivity {
         // session manager
         session = new SessionManager(getApplicationContext());
 
-        if (!session.isLoggedIn()) {
+        /*if (!session.isLoggedIn()) {
 
             Toast.makeText(getApplicationContext(), "Silahkan Login kembali", Toast.LENGTH_LONG).show();
 
             Intent kembali = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(kembali);
             finish();
-        }
+        }*/
 
         // Fetching user details from sqlite
         HashMap<String, String> driver = db.getDriverDetails();
@@ -194,6 +206,8 @@ public class MainActivity extends AppCompatActivity {
                                 mLocationCallback, Looper.myLooper());
 
                         displayLocation();
+                        // Changing the button text
+                        btnStartLocation.setText(getString(R.string.berhenti));
                     }
                 })
                 .addOnFailureListener(this, new OnFailureListener() {
@@ -222,6 +236,8 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         displayLocation();
+                        // Changing the button text
+                        btnStartLocation.setText(getString(R.string.mulai));
                     }
                 });
     }
@@ -232,6 +248,8 @@ public class MainActivity extends AppCompatActivity {
     private void stopLocationUpdates() {
         if (!mRequestingLocationUpdates) {
             Log.d(TAG, "stopLocationUpdates: updates never requested, no-op.");
+            // Changing the button text
+            btnStartLocation.setText(getString(R.string.mulai));
             return;
         }
 
@@ -257,13 +275,9 @@ public class MainActivity extends AppCompatActivity {
             // Starting the location updates
             startLocationUpdates();
 
-            // Changing the button text
-            btnStartLocation.setText(getString(R.string.berhenti));
 
             Log.d(TAG, "Periodic location updates started!");
         } else {
-            // Changing the button text
-            btnStartLocation.setText(getString(R.string.mulai));
 
             mRequestingLocationUpdates = false;
             // Stopping the location updates
@@ -279,10 +293,12 @@ public class MainActivity extends AppCompatActivity {
     private void displayLocation() {
 
         if (mLastLocation != null) {
-            double latitude = mLastLocation.getLatitude();
-            double longitude = mLastLocation.getLongitude();
+            double lat = mLastLocation.getLatitude();
+            double lon = mLastLocation.getLongitude();
 
-            lblLocation.setText(latitude + ", " + longitude);
+            lblLocation.setText(lat + ", " + lon);
+
+            retrieveLocation(lat, lon);
 
         } else {
 
@@ -516,5 +532,46 @@ public class MainActivity extends AppCompatActivity {
                         });
             }
         }
+    }
+
+    /**
+     * Function to store user in MySQL database will post params(angkot_id,
+     * lat, lon) to retrieve url
+     *
+     * @param lat
+     * @param lon*/
+    private void retrieveLocation(final double lat, final double lon) {
+
+        // Tag used to cancel the request
+        String tag_string_request = "req_location";
+
+        StringRequest stringRequest = new StringRequest(Method.POST,
+                AppConfig.URL_SETLOCATION, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "Location Response: " + response.toString());
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "Location Error: " + error.getMessage());
+                Toast.makeText(getApplicationContext(),
+                        error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                // Posting params to register url
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("lat", String.valueOf(new Double(lat)));
+                params.put("lon", String.valueOf(new Double(lon)));
+
+                return params;
+            }
+        };
+
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(stringRequest, tag_string_request);
     }
 }

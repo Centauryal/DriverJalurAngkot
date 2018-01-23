@@ -71,7 +71,7 @@
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:background="@color/colorPrimary"
-                android:layout_alignParentLeft="true"/>
+                android:layout_alignParentRight="true"/>
 
             <Button
                 android:id="@+id/btndikurangi"
@@ -83,7 +83,7 @@
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:background="@color/colorPrimary"
-                android:layout_alignParentRight="true"/>
+                android:layout_alignParentLeft="true"/>
         </RelativeLayout>
 
         <Button
