@@ -2,6 +2,7 @@ package com.centaury.driverjalurangkot.helper;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
 /**
@@ -16,7 +17,7 @@ public class SessionManager {
     // Shared Preferences
     SharedPreferences pref;
 
-    SharedPreferences.Editor editor;
+    Editor editor;
     Context mcontext;
 
     // Shared pref mode

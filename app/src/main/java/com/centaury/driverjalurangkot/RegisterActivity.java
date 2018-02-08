@@ -40,8 +40,8 @@ public class RegisterActivity extends AppCompatActivity {
     @BindView(R.id.link_to_login)
     TextView LoginScreen;
 
-    private TextInputLayout inputLayoutName, inputLayoutPhone, inputLayoutRegPass, inputLayoutReType;
-    private EditText InputName,InputPhone,InputRegPass,InputRetype;
+    private TextInputLayout inputLayoutName, inputLayoutPhone, inputLayoutPlat, inputLayoutDevice, inputLayoutRegPass, inputLayoutReType;
+    private EditText InputName,InputPhone, InputPlat, InputDevice, InputRegPass,InputRetype;
     private Button BtnRegister;
 
     private ProgressDialog pDialog;
@@ -58,11 +58,15 @@ public class RegisterActivity extends AppCompatActivity {
 
         inputLayoutName = (TextInputLayout) findViewById(R.id.inputlayoutname);
         inputLayoutPhone = (TextInputLayout) findViewById(R.id.inputlayoutphone);
+        inputLayoutPlat = (TextInputLayout) findViewById(R.id.inputlayoutplatnomor);
+        inputLayoutDevice = (TextInputLayout) findViewById(R.id.inputlayoutdevice);
         inputLayoutRegPass = (TextInputLayout) findViewById(R.id.inputlayoutregpass);
         inputLayoutReType = (TextInputLayout) findViewById(R.id.inputlayoutretype);
 
         InputName = (EditText) findViewById(R.id.inputname);
         InputPhone = (EditText) findViewById(R.id.inputphone);
+        InputPlat = (EditText) findViewById(R.id.inputplatnomor);
+        InputDevice = (EditText) findViewById(R.id.inputdevice);
         InputRegPass = (EditText) findViewById(R.id.inputregpass);
         InputRetype = (EditText) findViewById(R.id.inputretype);
 
@@ -70,6 +74,8 @@ public class RegisterActivity extends AppCompatActivity {
 
         InputName.addTextChangedListener(new MyTextWatcher(InputName));
         InputPhone.addTextChangedListener(new MyTextWatcher(InputPhone));
+        InputPlat.addTextChangedListener(new MyTextWatcher(InputPlat));
+        InputDevice.addTextChangedListener(new MyTextWatcher(InputDevice));
         InputRegPass.addTextChangedListener(new MyTextWatcher(InputRegPass));
         InputRetype.addTextChangedListener(new MyTextWatcher(InputRetype));
 
@@ -115,6 +121,12 @@ public class RegisterActivity extends AppCompatActivity {
         if (!validatePhone()){
             return;
         }
+        if (!validatePlatNomor()){
+            return;
+        }
+        if (!validateDevice()){
+            return;
+        }
         if (!validateRegPass()){
             return;
         }
@@ -132,12 +144,14 @@ public class RegisterActivity extends AppCompatActivity {
 
     /*Check validate form*/
     private void checkRegForm(){
-        String name = InputName.getText().toString().trim();
-        String phone = InputPhone.getText().toString().trim();
+        String nama = InputName.getText().toString().trim();
+        String hp = InputPhone.getText().toString().trim();
+        String nopol = InputPlat.getText().toString().trim();
+        String device = InputDevice.getText().toString().trim();
         String password = InputRegPass.getText().toString().trim();
 
-        if (!name.isEmpty() && !phone.isEmpty() && !password.isEmpty()) {
-            checkRegister(name, phone, password);
+        if (!nama.isEmpty() && !hp.isEmpty() && !nopol.isEmpty() && !device.isEmpty() && !password.isEmpty()) {
+            checkRegister(nama, hp, nopol, device, password);
         } else {
             Toast.makeText(getApplicationContext(), "Please enter your details!", Toast.LENGTH_LONG).show();
         }
@@ -161,6 +175,28 @@ public class RegisterActivity extends AppCompatActivity {
             return false;
         } else {
             inputLayoutPhone.setErrorEnabled(false);
+        }
+        return true;
+    }
+
+    private Boolean validatePlatNomor(){
+        if (InputPlat.getText().toString().trim().isEmpty()){
+            inputLayoutPlat.setError(getString(R.string.err_msg_platnomor));
+            requestFocus(InputPlat);
+            return false;
+        } else {
+            inputLayoutPlat.setErrorEnabled(false);
+        }
+        return true;
+    }
+
+    private Boolean validateDevice(){
+        if (InputDevice.getText().toString().trim().isEmpty()){
+            inputLayoutDevice.setError(getString(R.string.err_msg_device));
+            requestFocus(InputDevice);
+            return false;
+        } else {
+            inputLayoutDevice.setErrorEnabled(false);
         }
         return true;
     }
@@ -227,6 +263,12 @@ public class RegisterActivity extends AppCompatActivity {
                 case R.id.inputphone:
                     validatePhone();
                     break;
+                case R.id.inputplatnomor:
+                    validatePlatNomor();
+                    break;
+                case R.id.inputdevice:
+                    validateDevice();
+                    break;
                 case R.id.inputregpass:
                     validateRegPass();
                     break;
@@ -242,7 +284,7 @@ public class RegisterActivity extends AppCompatActivity {
      * Function to store user in MySQL database will post params(tag, name,
      * email, password) to register url
      */
-    private void checkRegister(final String name, final String phone, final String password){
+    private void checkRegister(final String nama, final String hp, final String nopol, final String device, final String password){
 
         // Tag used to cancel the request
         String tag_string_req = "req_register";
@@ -266,12 +308,13 @@ public class RegisterActivity extends AppCompatActivity {
                         String uid = jObjt.getString("uid");
 
                         JSONObject driver = jObjt.getJSONObject("driver");
-                        String name = driver.getString("name");
-                        String phone = driver.getString("phone");
+                        String nama = driver.getString("nama");
+                        String hp = driver.getString("hp");
+                        String nopol = driver.getString("nopol");
                         String created_at = driver.getString("created_at");
 
                         // Inserting row in users table
-                        db.addDriver(name, phone, uid, created_at);
+                        db.addDriver(nama, hp, nopol, uid, created_at);
 
                         Toast.makeText(getApplicationContext(), "User successfully registered. Try login now!", Toast.LENGTH_LONG).show();
 
@@ -303,8 +346,10 @@ public class RegisterActivity extends AppCompatActivity {
             protected Map<String, String> getParams() {
                 // Posting params to register url
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("name", name);
-                params.put("phone", phone);
+                params.put("nama", nama);
+                params.put("hp", hp);
+                params.put("nopol", nopol);
+                params.put("deviceid", device);
                 params.put("password", password);
 
                 return params;

@@ -198,7 +198,7 @@ public class LoginActivity extends AppCompatActivity {
     /*
     function to verify login details in mysql db
     */
-    private void checkLogin(final String phone, final String password) {
+    private void checkLogin(final String hp, final String password) {
         // Tag used to cancel request
         String tag_string_req = "req_login";
 
@@ -226,12 +226,13 @@ public class LoginActivity extends AppCompatActivity {
                         String uid = jObjt.getString("uid");
 
                         JSONObject driver = jObjt.getJSONObject("driver");
-                        String name = driver.getString("name");
-                        String phone = driver.getString("phone");
+                        String nama = driver.getString("nama");
+                        String hp = driver.getString("hp");
+                        String nopol = driver.getString("nopol");
                         String created_at = driver.getString("created_at");
 
                         // inserting row in drivers table
-                        db.addDriver(name, phone, uid, created_at);
+                        db.addDriver(nama, hp, nopol, uid, created_at);
 
                         // Launch Main Activity
                         Intent launch = new Intent(LoginActivity.this, MainActivity.class);
@@ -262,7 +263,7 @@ public class LoginActivity extends AppCompatActivity {
             protected Map<String, String> getParams(){
                 // Posting parameters to login url
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("phone", phone);
+                params.put("hp", hp);
                 params.put("password", password);
 
                 return params;

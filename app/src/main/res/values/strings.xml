@@ -1,20 +1,28 @@
 <resources>
     <string name="app_name">Driver Jalur Angkot</string>
     <string name="action_settings">Settings</string>
+
     <string name="hint_name">Full Name</string>
     <string name="hint_login">Phone Number</string>
     <string name="hint_phone">Phone Number</string>
+    <string name="hint_platnomor">Plat Nomor</string>
+    <string name="hint_device">Nama Device</string>
     <string name="hint_password">Password</string>
     <string name="hint_retypepass">Retype Password</string>
+
     <string name="btn_login">Login</string>
     <string name="btn_sign_up">Sign Up</string>
     <string name="btn_logout"> Logout</string>
+
     <string name="err_msg_name">Enter your full name</string>
     <string name="err_msg_login">Enter valid Phone Number</string>
     <string name="err_msg_password">Enter the password</string>
     <string name="err_msg_retypepass">Enter valid the password</string>
     <string name="err_msg_match">Password not match</string>
     <string name="err_msg_phone">Enter the phone number</string>
+    <string name="err_msg_platnomor">Enter the plat number</string>
+    <string name="err_msg_device">Enter the device name</string>
+
     <string name="login">Login to your Account</string>
     <string name="register">Register New Account</string>
     <string name="msg_exit">Are you sure you want to logout?</string>
@@ -24,4 +32,11 @@
     <string name="permission_rationale">Location permission is needed for core functionality</string>
     <string name="permission_denied_explanation">Permission was denied, but is needed for core functionality.</string>
     <string name="settings">Settings</string>
+
+    <string name="title_sms">SMS Verification</string>
+    <string name="subtitle_sms">Jalur Angkot needs to verify your identity. Please enter your phone number. You will receive an SMS with a verification code.</string>
+    <string name="msg_manual_sms">(Enter the OTP below in case if we fail to detect the SMS automatically)</string>
+    <string name="hint_enter_sms">Enter Code</string>
+    <string name="btn_sms">Verify Code</string>
+    <string name="get_sms">Resend Code</string>
 </resources>

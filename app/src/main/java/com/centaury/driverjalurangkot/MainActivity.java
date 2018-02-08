@@ -24,7 +24,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.centaury.driverjalurangkot.app.AppConfig;
 import com.centaury.driverjalurangkot.app.AppController;
 import com.centaury.driverjalurangkot.helper.SQLiteHandler;
@@ -34,9 +33,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.Request.Method;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -105,7 +101,9 @@ public class MainActivity extends AppCompatActivity {
     private SessionManager session;
 
     private Button btnStartLocation, btnDitambah, btnDikurangi;
-    private TextView lblLocation, namaDriver;
+    private TextView lblLocation, sisaKursi, namaDriver;
+
+    int passanger = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
         btnDikurangi = (Button) findViewById(R.id.btndikurangi);
 
         lblLocation = (TextView) findViewById(R.id.txtlocation);
+        sisaKursi = (TextView) findViewById(R.id.sisakursi);
         namaDriver = (TextView) findViewById(R.id.namadriver);
 
         // SqLite database handler
@@ -125,28 +124,50 @@ public class MainActivity extends AppCompatActivity {
         // session manager
         session = new SessionManager(getApplicationContext());
 
-        /*if (!session.isLoggedIn()) {
+        if (!session.isLoggedIn()) {
 
             Toast.makeText(getApplicationContext(), "Silahkan Login kembali", Toast.LENGTH_LONG).show();
 
             Intent kembali = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(kembali);
             finish();
-        }*/
+        }
 
         // Fetching user details from sqlite
         HashMap<String, String> driver = db.getDriverDetails();
 
-        String name = driver.get("name");
+        String nama = driver.get("nama");
 
         // Displaying the user details on the screen
-        namaDriver.setText(name);
+        namaDriver.setText(nama);
 
         // Toggling the periodic location updates
         btnStartLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 togglePeriodicLocationUpdates();
+            }
+        });
+
+        btnDitambah.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (passanger < 10) {
+                    btnDitambah.setEnabled(true);
+                    passanger ++;
+                }
+                sisaKursi.setText(String.valueOf(passanger));
+            }
+        });
+
+        btnDikurangi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (passanger > 0) {
+                    btnDikurangi.setEnabled(true);
+                    passanger --;
+                }
+                sisaKursi.setText(String.valueOf(passanger));
             }
         });
 
@@ -298,7 +319,11 @@ public class MainActivity extends AppCompatActivity {
 
             lblLocation.setText(lat + ", " + lon);
 
-            retrieveLocation(lat, lon);
+            HashMap<String, String> driver = db.getDriverDetails();
+
+            String nopol = driver.get("nopol");
+
+            retrieveLocation(nopol, lat, lon);
 
         } else {
 
@@ -540,7 +565,7 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param lat
      * @param lon*/
-    private void retrieveLocation(final double lat, final double lon) {
+    private void retrieveLocation(final String nopol, final Double lat, final Double lon) {
 
         // Tag used to cancel the request
         String tag_string_request = "req_location";
@@ -564,8 +589,9 @@ public class MainActivity extends AppCompatActivity {
             protected Map<String, String> getParams() {
                 // Posting params to register url
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("lat", String.valueOf(new Double(lat)));
-                params.put("lon", String.valueOf(new Double(lon)));
+                params.put("nopol", nopol);
+                params.put("lat", String.valueOf(lat));
+                params.put("lon", String.valueOf(lon));
 
                 return params;
             }
