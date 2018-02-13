@@ -80,6 +80,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dip"
                     android:singleLine="true"
+                    android:maxLength="12"
                     android:hint="@string/hint_phone"
                     android:inputType="phone"/>
 
@@ -102,7 +103,7 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <!--Nama Device-->
+            <!--Device Id-->
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/inputlayoutdevice"
                 android:layout_width="fill_parent"
@@ -116,7 +117,8 @@
                     android:layout_marginBottom="10dip"
                     android:singleLine="true"
                     android:hint="@string/hint_device"
-                    android:inputType="text"/>
+                    android:editable="false"
+                    android:inputType="none"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -181,18 +183,6 @@
         </LinearLayout>
         <!--Register Form End-->
 
-        <!--Footer Start-->
-        <LinearLayout
-            android:id="@+id/footerregister"
-            android:layout_width="fill_parent"
-            android:layout_height="90dip"
-            android:layout_alignParentBottom="true"
-            android:background="@layout/footer_repeat"
-            android:layout_below="@+id/formregister"
-            android:orientation="vertical">
-
-        </LinearLayout>
-        <!--Footer End-->
     </RelativeLayout>
 
 </ScrollView>

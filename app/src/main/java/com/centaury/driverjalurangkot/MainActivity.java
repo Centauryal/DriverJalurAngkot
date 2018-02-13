@@ -8,6 +8,7 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -105,6 +106,9 @@ public class MainActivity extends AppCompatActivity {
 
     int passanger = 0;
 
+    private boolean doubleBackToExitPressedOnce;
+    private Handler mHandler = new Handler();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,12 +129,7 @@ public class MainActivity extends AppCompatActivity {
         session = new SessionManager(getApplicationContext());
 
         if (!session.isLoggedIn()) {
-
-            Toast.makeText(getApplicationContext(), "Silahkan Login kembali", Toast.LENGTH_LONG).show();
-
-            Intent kembali = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(kembali);
-            finish();
+            sessionLogout();
         }
 
         // Fetching user details from sqlite
@@ -406,6 +405,14 @@ public class MainActivity extends AppCompatActivity {
         stopLocationUpdates();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mHandler != null) {
+            mHandler.removeCallbacks(runnable);
+        }
+    }
+
     /**
      * Stores activity data in the Bundle.
      */
@@ -446,6 +453,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         session.setLogin(false);
+                        session.clearSession();
 
                         db.deleteDrivers();
 
@@ -464,6 +472,15 @@ public class MainActivity extends AppCompatActivity {
 
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    private void sessionLogout(){
+        session.setLogin(false);
+        Toast.makeText(getApplicationContext(), "Silahkan Login kembali", Toast.LENGTH_LONG).show();
+
+        Intent kembali = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(kembali);
+        finish();
     }
 
     private void showSnackbar(final int mainTextStringId, final int actionStringId,
@@ -599,5 +616,26 @@ public class MainActivity extends AppCompatActivity {
 
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(stringRequest, tag_string_request);
+    }
+
+    private final Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            doubleBackToExitPressedOnce = false;
+        }
+    };
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            finish();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        mHandler.postDelayed(runnable, 2000);
     }
 }

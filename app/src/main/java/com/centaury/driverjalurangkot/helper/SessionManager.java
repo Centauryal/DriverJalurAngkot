@@ -28,6 +28,8 @@ public class SessionManager {
 
     private static final String KEY_IS_LOGGEDIN = "isLoggedIn";
 
+    private static final String KEY_IS_WAITING_FOR_SMS = "IsWaitingForSms";
+
     public SessionManager(Context context){
         this.mcontext = context;
         pref = mcontext.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
@@ -45,5 +47,19 @@ public class SessionManager {
 
     public boolean isLoggedIn(){
         return pref.getBoolean(KEY_IS_LOGGEDIN, false);
+    }
+
+    public void clearSession() {
+        editor.clear();
+        editor.commit();
+    }
+
+    public boolean isWaitingForSms() {
+        return pref.getBoolean(KEY_IS_WAITING_FOR_SMS, false);
+    }
+
+    public void setIsWaitingForSms(boolean isWaiting) {
+        editor.putBoolean(KEY_IS_WAITING_FOR_SMS, isWaiting);
+        editor.commit();
     }
 }

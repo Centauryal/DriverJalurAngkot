@@ -2,6 +2,7 @@ package com.centaury.driverjalurangkot;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.provider.Settings;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -48,6 +49,8 @@ public class RegisterActivity extends AppCompatActivity {
     private SessionManager session;
     private SQLiteHandler db;
 
+    String unique_id;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +81,9 @@ public class RegisterActivity extends AppCompatActivity {
         InputDevice.addTextChangedListener(new MyTextWatcher(InputDevice));
         InputRegPass.addTextChangedListener(new MyTextWatcher(InputRegPass));
         InputRetype.addTextChangedListener(new MyTextWatcher(InputRetype));
+
+        unique_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        InputDevice.setText(unique_id);
 
         // Progress dialog
         pDialog = new ProgressDialog(this);
@@ -136,7 +142,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         checkRegForm();
 
-        Toast.makeText(getApplicationContext(), "Registration Successful!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "User successfully registered. Try login now!", Toast.LENGTH_LONG).show();
         Intent i = new Intent(getApplicationContext(), LoginActivity.class);
         startActivity(i);
 
@@ -292,7 +298,8 @@ public class RegisterActivity extends AppCompatActivity {
         pDialog.setMessage("Registering ...");
         showDialog();
 
-        StringRequest strReq = new StringRequest(Method.POST, AppConfig.URL_REGISTER, new Response.Listener<String>() {
+        StringRequest strReq = new StringRequest(Method.POST,
+                AppConfig.URL_REGISTER, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d(TAG, "Register Response: " + response.toString());
@@ -300,34 +307,20 @@ public class RegisterActivity extends AppCompatActivity {
 
                 try {
                     JSONObject jObjt = new JSONObject(response);
-                    boolean error = jObjt.getBoolean("error");
 
-                    if (!error) {
-                        // User successfully stored in MySQL
-                        // Now store the user in sqlite
-                        String uid = jObjt.getString("uid");
+                    // User successfully stored in MySQL
+                    // Now store the user in sqlite
+                    JSONObject driver = jObjt.getJSONObject("data");
+                    String nopol = driver.getString("nopol");
 
-                        JSONObject driver = jObjt.getJSONObject("driver");
-                        String nama = driver.getString("nama");
-                        String hp = driver.getString("hp");
-                        String nopol = driver.getString("nopol");
-                        String created_at = driver.getString("created_at");
+                    // Inserting row in users table
+                    db.addDriver(nama, hp, nopol);
 
-                        // Inserting row in users table
-                        db.addDriver(nama, hp, nopol, uid, created_at);
+                    // Launch login activity
+                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
 
-                        Toast.makeText(getApplicationContext(), "User successfully registered. Try login now!", Toast.LENGTH_LONG).show();
-
-                        // Launch login activity
-                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        // Error occurred in registration. Get the error
-                        // message
-                        String errorMsg = jObjt.getString("error_msg");
-                        Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_LONG).show();
-                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
