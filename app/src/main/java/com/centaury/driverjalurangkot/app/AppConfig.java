@@ -7,11 +7,14 @@ package com.centaury.driverjalurangkot.app;
 public class AppConfig {
 
     // Server user login url
-    public static String URL_LOGIN = "http://www.supersoft.co.id/jalurangkot/login.php";
+    public static String URL_LOGIN = "http://www.jalurangkot.com/androidapps/login.php";
 
     // Server user register url
-    public static String URL_REGISTER = "http://www.supersoft.co.id/jalurangkot/register.php";
+    public static String URL_REGISTER = "http://www.jalurangkot.com/androidapps/register.php";
 
     // Server post location
-    public static String URL_SETLOCATION = "http://www.supersoft.co.id/jalurangkot/setlocation.php";
+    public static String URL_SETLOCATION = "http://www.jalurangkot.com/androidapps/setlocation.php";
+
+    // Server resend SMS
+    public static String URL_RESENDSMS = "http://www.jalurangkot.com/androidapps/resend.php";
 }

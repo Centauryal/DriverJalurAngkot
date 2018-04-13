@@ -142,10 +142,6 @@ public class RegisterActivity extends AppCompatActivity {
 
         checkRegForm();
 
-        Toast.makeText(getApplicationContext(), "User successfully registered. Try login now!", Toast.LENGTH_LONG).show();
-        Intent i = new Intent(getApplicationContext(), LoginActivity.class);
-        startActivity(i);
-
     }
 
     /*Check validate form*/
@@ -308,18 +304,27 @@ public class RegisterActivity extends AppCompatActivity {
                 try {
                     JSONObject jObjt = new JSONObject(response);
 
-                    // User successfully stored in MySQL
-                    // Now store the user in sqlite
-                    JSONObject driver = jObjt.getJSONObject("data");
-                    String nopol = driver.getString("nopol");
+                    Integer result = jObjt.getInt("result");
+                    String message = jObjt.getString("message");
 
-                    // Inserting row in users table
-                    db.addDriver(nama, hp, nopol);
+                    if (result == 1){
+                        // User successfully stored in MySQL
+                        // Now store the user in sqlite
+                        JSONObject driver = jObjt.getJSONObject("data");
+                        String nopol = driver.getString("nopol");
 
-                    // Launch login activity
-                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                    finish();
+                        // Inserting row in users table
+                        db.addDriver(nama, hp, nopol);
+
+                        // Launch login activity
+                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                        Toast.makeText(getApplicationContext(), "" + message, Toast.LENGTH_LONG).show();
+
+                    } else {
+                        Toast.makeText(RegisterActivity.this, "" + message, Toast.LENGTH_LONG).show();
+                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();

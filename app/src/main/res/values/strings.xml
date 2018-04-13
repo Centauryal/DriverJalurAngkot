@@ -6,37 +6,37 @@
     <string name="hint_login">Phone Number</string>
     <string name="hint_phone">Phone Number</string>
     <string name="hint_platnomor">Plat Nomor</string>
-    <string name="hint_device">Device Id</string>
+    <string name="hint_device">ID Perangkat</string>
     <string name="hint_password">Password</string>
-    <string name="hint_retypepass">Retype Password</string>
+    <string name="hint_retypepass">Ulangi Password</string>
 
-    <string name="btn_login">Login</string>
-    <string name="btn_sign_up">Sign Up</string>
-    <string name="btn_logout"> Logout</string>
+    <string name="btn_login">Masuk</string>
+    <string name="btn_sign_up">Daftar</string>
+    <string name="btn_logout">Keluar</string>
 
-    <string name="err_msg_name">Enter your full name</string>
-    <string name="err_msg_login">Enter valid Phone Number</string>
-    <string name="err_msg_password">Enter the password</string>
-    <string name="err_msg_retypepass">Enter valid the password</string>
-    <string name="err_msg_match">Password not match</string>
-    <string name="err_msg_phone">Enter the phone number</string>
-    <string name="err_msg_platnomor">Enter the plat number</string>
-    <string name="err_msg_device">Enter the device id</string>
+    <string name="err_msg_name">Masukan nama</string>
+    <string name="err_msg_login">Nomor harus valid</string>
+    <string name="err_msg_password">Masukan password</string>
+    <string name="err_msg_retypepass">Masukan ulang password</string>
+    <string name="err_msg_match">Password tidak sama</string>
+    <string name="err_msg_phone">Masukan nomor telepon</string>
+    <string name="err_msg_platnomor">Masukan plat nomor</string>
+    <string name="err_msg_device">Masukan ID perangkat</string>
 
-    <string name="login">Login to your Account</string>
-    <string name="register">Register New Account</string>
-    <string name="msg_exit">Are you sure you want to logout?</string>
+    <string name="login">Masuk Ke Akun</string>
+    <string name="register">Daftar Member Baru</string>
+    <string name="msg_exit">Apakah yakin ingin keluar?</string>
     <string name="mulai">Mulai</string>
     <string name="berhenti">Selesai</string>
 
     <string name="permission_rationale">Location permission is needed for core functionality</string>
     <string name="permission_denied_explanation">Permission was denied, but is needed for core functionality.</string>
-    <string name="settings">Settings</string>
+    <string name="settings">Pengaturan</string>
 
-    <string name="title_sms">SMS Verification</string>
-    <string name="subtitle_sms">Jalur Angkot needs to verify your identity. Please enter your phone number. You will receive an SMS with a verification code.</string>
-    <string name="msg_manual_sms">(Enter the code below in case if we fail to detect the SMS automatically)</string>
-    <string name="hint_enter_sms">Enter Code</string>
-    <string name="btn_sms">Verify Code</string>
-    <string name="get_sms">Resend Code</string>
+    <string name="title_sms">Verifikasi SMS</string>
+    <string name="subtitle_sms">Jalur Angkot membutuhkan verifikasi identitasmu. Mohon masukan nomor telepon yang telah terdaftar. Kamu akan menerima kode SMS Verifikasi.</string>
+    <string name="msg_manual_sms">(Masukan kode dibawah ini jika gagal mendeteksi kode SMS secara otomatis)</string>
+    <string name="hint_enter_sms">Masukan Code</string>
+    <string name="btn_sms">Kode Verifikasi</string>
+    <string name="get_sms">Kirim Kode</string>
 </resources>

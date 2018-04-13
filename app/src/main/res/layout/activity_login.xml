@@ -95,7 +95,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="40dip"
                         android:layout_marginBottom="40dip"
-                        android:text="New to Member? Register here"
+                        android:text="Member Baru? Daftar Disini"
                         android:gravity="center"
                         android:textSize="20dip"
                         android:textColor="#0b84aa"/>
@@ -142,7 +142,7 @@
 
             <EditText
                 android:id="@+id/inputsms"
-                android:layout_width="120dp"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif-light"
                 android:gravity="center_horizontal"

@@ -64,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
     private ViewPagerAdapter adapter;
+    private CountDownTimer countTimer;
 
     String unique_id;
 
@@ -150,6 +151,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String login = InputDriver.getText().toString().trim();
                 setResendSMS(login, unique_id);
+                countTimerResend();
             }
         });
     }
@@ -175,13 +177,12 @@ public class LoginActivity extends AppCompatActivity {
         String login = InputDriver.getText().toString().trim();
         String password = InputSMS.getText().toString().trim();
 
+        showDialog();
         // Check for empty data in the form
         if (!login.isEmpty() && !password.isEmpty()){
             // login user
             checkLogin(login, password, unique_id);
-            Toast.makeText(getApplicationContext(), "Login Successful!", Toast.LENGTH_SHORT).show();
-            Intent i = new Intent(this, MainActivity.class);
-            startActivity(i);
+            hideDialog();
         } else {
             // Prompt user to enter credentials
             Toast.makeText(getApplicationContext(), "Please enter the credentials!", Toast.LENGTH_LONG).show();
@@ -255,24 +256,32 @@ public class LoginActivity extends AppCompatActivity {
                 try {
                     JSONObject jObjt = new JSONObject(response);
 
-                    // user successfully logged in
-                    // Create login session
-                    session.setLogin(true);
+                    Integer result = jObjt.getInt("result");
+                    String message = jObjt.getString("message");
 
-                    // Now store the user in SQLite
-                    JSONObject driver = jObjt.getJSONObject("data");
-                    String hp = driver.getString("hp");
-                    String nama = driver.getString("nama");
-                    String nopol = driver.getString("nopol");
+                    if (result == 1) {
+                        // Now store the user in SQLite
+                        JSONObject driver = jObjt.getJSONObject("data");
+                        String hp = driver.getString("hp");
+                        String nama = driver.getString("nama");
+                        String nopol = driver.getString("nopol");
 
-                    // inserting row in drivers table
-                    db.addDriver(nama, hp, nopol);
-
-                    // Launch Main Activity
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
+                        // inserting row in drivers table
+                        db.addDriver(nama, hp, nopol);
+                        // user successfully logged in
+                        // Create login session
+                        session.setLogin(true);
+                        // Launch Main Activity
+                        Toast.makeText(getApplicationContext(), "" + message, Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(LoginActivity.this, "" + message, Toast.LENGTH_LONG).show();
+                        viewPager.setCurrentItem(0);
+                        countTimer.cancel();
+                    }
 
                 } catch (JSONException e) {
                     // Json Error
@@ -382,9 +391,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void countTimerResend(){
-        new CountDownTimer(30000, 1000){
+        countTimer = new CountDownTimer(30000, 1000){
             public void onTick(long millisUntilFinished){
-                CountTimerResend.setText("" + millisUntilFinished / 1000);
+                CountTimerResend.setVisibility(View.VISIBLE);
+                CountTimerResend.setText("00:" + millisUntilFinished / 1000);
                 ResendSMS.setEnabled(false);
                 ResendSMS.setTextColor(Color.GRAY);
             }
@@ -402,7 +412,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void hideDialog() {
-        if (!pDialog.isShowing())
+        if (pDialog.isShowing())
             pDialog.dismiss();
     }
 
@@ -411,6 +421,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (viewPager.getCurrentItem()== 1) {
             viewPager.setCurrentItem(0);
+            countTimer.cancel();
         } else {
             super.onBackPressed();
             finish();

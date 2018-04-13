@@ -46,12 +46,19 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.maps.android.PolyUtil;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
@@ -90,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
     private Location mLastLocation;
 
     // Location updates intervals in sec
-    private static final long UPDATE_INTERVAL = 5000; // 5 sec
+    private static final long UPDATE_INTERVAL = 1000; // 1 sec
     private static final long FASTEST_INTERVAL = UPDATE_INTERVAL / 2;
     private static int DISPLACEMENT = 10; //10 meter
 
@@ -102,12 +109,17 @@ public class MainActivity extends AppCompatActivity {
     private SessionManager session;
 
     private Button btnStartLocation, btnDitambah, btnDikurangi;
-    private TextView lblLocation, sisaKursi, namaDriver;
+    private TextView lblLocation, sisaKursi, namaDriver, lblmessage;
 
     int passanger = 0;
+    int waktu = 0;
 
     private boolean doubleBackToExitPressedOnce;
     private Handler mHandler = new Handler();
+    double lat, lon;
+
+    private List<LatLng> polyLineList;
+    String enPolyline, unique_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,8 +131,13 @@ public class MainActivity extends AppCompatActivity {
         btnDikurangi = (Button) findViewById(R.id.btndikurangi);
 
         lblLocation = (TextView) findViewById(R.id.txtlocation);
+        lblmessage = (TextView) findViewById(R.id.txtmessage);
         sisaKursi = (TextView) findViewById(R.id.sisakursi);
         namaDriver = (TextView) findViewById(R.id.namadriver);
+
+        polyLineList = new ArrayList<>();
+
+        unique_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
 
         // SqLite database handler
         db = new SQLiteHandler(getApplicationContext());
@@ -313,16 +330,22 @@ public class MainActivity extends AppCompatActivity {
     private void displayLocation() {
 
         if (mLastLocation != null) {
-            double lat = mLastLocation.getLatitude();
-            double lon = mLastLocation.getLongitude();
+            lat = mLastLocation.getLatitude();
+            lon = mLastLocation.getLongitude();
 
-            lblLocation.setText(lat + ", " + lon);
+            polyLineList.add(new LatLng(lat, lon));
 
-            HashMap<String, String> driver = db.getDriverDetails();
+            enPolyline = PolyUtil.encode(polyLineList);
 
-            String nopol = driver.get("nopol");
-
-            retrieveLocation(nopol, lat, lon);
+            lblLocation.setText("waktu ke:" + waktu + ", " + lat + ", " + lon + ", " + enPolyline);
+            waktu++;
+            if (waktu > 5) {
+                HashMap<String, String> driver = db.getDriverDetails();
+                waktu = 0;
+                String nopol = driver.get("nopol");
+                retrieveLocation(unique_id, nopol, lat, lon, enPolyline);
+                polyLineList = new ArrayList<>();
+            }
 
         } else {
 
@@ -398,19 +421,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-
-        // Remove location updates to save battery.
-        stopLocationUpdates();
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (mHandler != null) {
             mHandler.removeCallbacks(runnable);
         }
+        stopLocationUpdates();
     }
 
     /**
@@ -447,23 +463,18 @@ public class MainActivity extends AppCompatActivity {
     private void logoutDriver() {
 
         // Alert Dialog exit
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setMessage(R.string.msg_exit).setCancelable(false)
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Ya", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        session.setLogin(false);
                         session.clearSession();
-
                         db.deleteDrivers();
+                        sessionLogout();
 
-                        // Launching the login activity
-                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                        startActivity(intent);
-                        finish();
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Tidak", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
@@ -477,7 +488,6 @@ public class MainActivity extends AppCompatActivity {
     private void sessionLogout(){
         session.setLogin(false);
         Toast.makeText(getApplicationContext(), "Silahkan Login kembali", Toast.LENGTH_LONG).show();
-
         Intent kembali = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(kembali);
         finish();
@@ -582,7 +592,7 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param lat
      * @param lon*/
-    private void retrieveLocation(final String nopol, final Double lat, final Double lon) {
+    private void retrieveLocation(final String deviceid, final String nopol, final Double lat, final Double lon, final String point) {
 
         // Tag used to cancel the request
         String tag_string_request = "req_location";
@@ -592,6 +602,33 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 Log.d(TAG, "Location Response: " + response.toString());
+                lblmessage.setText(response);
+
+                try {
+                    JSONObject jObjt = new JSONObject(response);
+
+                    Integer result = jObjt.getInt("result");
+                    String message = jObjt.getString("message");
+
+                    if (result == 1) {
+                        Toast.makeText(getApplicationContext(), "" + message, Toast.LENGTH_SHORT).show();
+                    } else {
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                        builder.setMessage(""+ message).setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        });
+                        AlertDialog alert = builder.create();
+                        alert.show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
             }
         }, new Response.ErrorListener() {
@@ -606,9 +643,11 @@ public class MainActivity extends AppCompatActivity {
             protected Map<String, String> getParams() {
                 // Posting params to register url
                 Map<String, String> params = new HashMap<String, String>();
+                params.put("deviceid", deviceid);
                 params.put("nopol", nopol);
                 params.put("lat", String.valueOf(lat));
                 params.put("lon", String.valueOf(lon));
+                params.put("point", point);
 
                 return params;
             }
@@ -630,7 +669,6 @@ public class MainActivity extends AppCompatActivity {
         if (doubleBackToExitPressedOnce) {
             super.onBackPressed();
             finish();
-            return;
         }
 
         this.doubleBackToExitPressedOnce = true;

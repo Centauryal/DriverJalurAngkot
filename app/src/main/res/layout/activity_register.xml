@@ -175,7 +175,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dip"
                 android:layout_marginBottom="40dip"
-                android:text="Already has account! Login here"
+                android:text="Sudah Punya Akun! Masuk Disini"
                 android:gravity="center"
                 android:textSize="20dip"
                 android:textColor="#0b84aa"/>
